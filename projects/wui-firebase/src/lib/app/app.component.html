@@ -1,0 +1,17 @@
+<ng-content select="wui-app-title"></ng-content>
+
+<div class="main-outer">
+    <div class="main">
+        <ng-content select="wui-drawer"></ng-content>
+        <div class="outer">
+            <ng-content></ng-content>
+        </div>
+    </div>
+    <wui-snackbar></wui-snackbar>
+</div>
+
+<div class="loading" *ngIf="showLoading">
+    <wui-loading mode="circular"></wui-loading>
+</div>
+<wui-action-sheet></wui-action-sheet>
+<wui-dialog></wui-dialog>

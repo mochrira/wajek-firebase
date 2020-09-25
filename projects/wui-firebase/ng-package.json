@@ -1,0 +1,16 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/wui-firebase",
+  "lib": {
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "firebase": "firebase",
+      "@wajek/wui": "@wajek/wui"
+    }
+  },
+  "whitelistedNonPeerDependencies": [
+    "tslib",
+    "firebase",
+    "@wajek/wui"
+  ]
+}

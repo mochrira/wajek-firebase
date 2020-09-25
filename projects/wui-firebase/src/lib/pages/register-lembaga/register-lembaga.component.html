@@ -1,0 +1,24 @@
+<wui-page class="flex-page column middle-center">
+
+    <wui-top-bar>
+        <wui-top-bar-item icon="arrow-left" routerLink="/register/undangan"></wui-top-bar-item>
+    </wui-top-bar>
+
+    <div class="login-box">
+        <h1>{{title}}</h1>
+        <div class="desc">{{description}}</div>
+        <form [formGroup]="formLembaga" (ngSubmit)="submit()">
+            <wui-form-field class="transparent" label="{{namaInputDecoration.labelText}}" icon="{{namaInputDecoration.icon}}">
+                <input type="text" formControlName="nmLembaga">
+            </wui-form-field>
+            <wui-form-field class="transparent" label="{{alamatInputDecoration.labelText}}" icon="{{alamatInputDecoration.icon}}">
+                <textarea rows="2" formControlName="alamat"></textarea>
+            </wui-form-field>
+            <wui-form-field class="transparent" label="{{kotaInputDecoration.labelText}}" icon="{{kotaInputDecoration.icon}}">
+                <input type="text" formControlName="kota">
+            </wui-form-field>
+            <button type="submit" class="btn btn-primary btn-rounded btn-lg">{{buttonText}}</button>
+        </form>
+    </div>
+
+</wui-page>

@@ -1,0 +1,22 @@
+<wui-page class="flex-page column middle-center">
+
+    <wui-top-bar>
+        <wui-top-bar-item icon="arrow-left" (click)="signOut()"></wui-top-bar-item>
+    </wui-top-bar>
+
+    <div class="login-box">
+        <h1>{{title}}</h1>
+        <div class="desc">{{description}}</div>
+        <form [formGroup]="formVerify" (ngSubmit)="submit()">
+            <wui-form-field class="transparent" label="{{kodeInputDecoration?.labelText}}" icon="{{kodeInputDecoration?.icon}}">
+                <input type="text" formControlName="code">
+            </wui-form-field>
+            <button type="submit" class="btn btn-primary btn-rounded btn-lg">{{buttonText}}</button>
+        </form>
+        <div class="pt-5">
+            <div>{{beforeRegisterText}}</div>
+            <a routerLink="/register/lembaga">{{registerText}}</a>
+        </div>
+    </div>
+
+</wui-page>

@@ -1,0 +1,72 @@
+:host{
+    position:fixed;
+    top:0;left:0;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+
+    &.rounded {
+        overflow:hidden;
+        border-radius:.75rem;
+    }
+
+    &.desktop {
+        border: 1px solid #DDD;
+    }
+
+    .main {
+        flex: 1 1 auto;
+        display:flex;
+        height: 100%;
+        width: 100%;
+
+        &-outer {
+            display:flex;
+            height: 100%;
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .outer{
+            flex: 1 1 auto;
+            width:100%;
+            height:100%;
+            position: relative;
+        }
+    }
+
+    ::ng-deep {
+        span.mdi{
+            font-size:1.5rem;
+        }
+
+        div.wui-divider{
+            border-bottom:1px solid #EFEFEF;
+            display:block;
+            margin-top:calc(.5rem - 1px);
+            margin-bottom:.5rem;
+        }
+    }
+
+    .buttons{
+        .btn{
+            margin-right:.5rem;
+            &:last-child{
+                margin-right:0;
+            }
+        }
+    }
+}
+
+.loading{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background-color:rgba(255,255,255,0.5);
+    top:0;left:0;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    z-index:999999;
+}

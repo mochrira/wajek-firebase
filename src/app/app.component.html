@@ -1,0 +1,6 @@
+<wui-firebase-app>
+    <wui-drawer *ngIf="isLoggedIn">
+        <wui-drawer-item icon="exit-to-app" (click)="signOut()">Sign Out</wui-drawer-item>
+    </wui-drawer>
+    <router-outlet></router-outlet>
+</wui-firebase-app>

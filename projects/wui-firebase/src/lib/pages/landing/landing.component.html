@@ -1,0 +1,19 @@
+<wui-page class="flex-page column middle-center">
+
+    <div class="login-box">
+        <ng-container *ngIf="isInit">
+            <div class="logo">
+                <img *ngIf="logo.length>0" src="{{logo}}" alt="">
+            </div>
+            <h1>{{title}}</h1>
+            <div class="desc">{{description}}</div>
+            <button class="btn btn-primary btn-lg btn-rounded" wuiRipple routerLink="/login">
+                {{buttonText}}
+            </button>
+        </ng-container>
+        <ng-container *ngIf="!isInit">
+            <wui-loading mode="circular"></wui-loading>
+        </ng-container>
+    </div>
+
+</wui-page>
