@@ -6,9 +6,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { VerifyPhoneComponent } from './pages/verify-phone/verify-phone.component';
 import { AppComponent } from './app/app.component';
-import { RegisterUndanganComponent } from './pages/register-undangan/register-undangan.component';
+import { JoinComponent } from './pages/join/join.component';
 import { RegisterLembagaComponent } from './pages/register-lembaga/register-lembaga.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { RouterModule } from '@angular/router';
@@ -26,9 +25,8 @@ import { UpgradeComponent } from './pages/upgrade/upgrade.component';
   declarations: [
     LandingComponent,
     LoginComponent,
-    VerifyPhoneComponent,
     AppComponent,
-    RegisterUndanganComponent,
+    JoinComponent,
     RegisterLembagaComponent,
     RegisterComponent,
     UpgradeComponent

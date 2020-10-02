@@ -10,10 +10,17 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
-    "module": "es2020",
+    "module": "es2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@wajek/firebase": ["./projects/wui-firebase/src/public_api"],
+      "@wajek/firebase/*": ["./projects/wui-firebase/src/public_api"]
+    }
   }
 }

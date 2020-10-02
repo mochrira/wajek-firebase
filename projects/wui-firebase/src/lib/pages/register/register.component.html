@@ -1,13 +1,19 @@
-<wui-page class="flex-page column middle-center">
+<wui-page class="flex-page column">
 
     <wui-top-bar>
         <wui-top-bar-item icon="arrow-left" routerLink="/login"></wui-top-bar-item>
     </wui-top-bar>
 
-    <div class="login-box">
+    <div class="login-box m-auto">
         <h1>{{title}}</h1>
         <div class="desc">{{description}}</div>
         <form [formGroup]="formRegister" (ngSubmit)="submit()">
+            <wui-form-field
+                class="transparent"
+                label="{{displayNameInputDecoration?.labelText}}"
+                icon="{{displayNameInputDecoration?.icon}}">
+                <input type="text" formControlName="displayName">
+            </wui-form-field>
             <wui-form-field 
                 class="transparent" 
                 label="{{emailInputDecoration?.labelText}}" 

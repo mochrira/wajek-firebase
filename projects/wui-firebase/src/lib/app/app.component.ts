@@ -28,53 +28,25 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
 
   ngOnInit() {
-    this.authService.isLoggedIn
-      .pipe(
-        filter(isLoggedIn => isLoggedIn !== null),
-        map(isLoggedIn => {
-          if((typeof isLoggedIn) !== "boolean") {
-            return false;
-          }
-          return isLoggedIn;
-        })
-      )
-      .subscribe(isLoggedIn => {
-        this.isLoggedIn = isLoggedIn
-      });
-
-      this.messageService.get('wui:loading').subscribe(showLoading => {
-        this.showLoading = showLoading;
-        this.cd.detectChanges();
-      });
+    this.messageService.get('wui:loading').subscribe(showLoading => {
+      this.showLoading = showLoading;
+      this.cd.detectChanges();
+    });
+    this.authService.isLoggedIn.pipe(filter(isLoggedIn => isLoggedIn !== null && typeof isLoggedIn == "boolean")).subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn;
+      if(!this.isLoggedIn) {
+        this.router.navigate(['/landing']);
+      }
+    });
   }
 
   async ngAfterViewInit() {
     try {
       this.wuiService.openLoading();
-      let isLoggedIn = await this.authService.initialize();
-      if(isLoggedIn == false) {
-        this.router.navigate(['/landing']);
-      }
+      await this.authService.initialize();
       this.wuiService.closeLoading();
     } catch(e) {
       this.wuiService.closeLoading();
-      if(e.error) {
-        if(e.error?.code == 'firebase-auth/unverified-number') {
-          this.router.navigate(['/verify/phone']);
-        }
-        if(e.error?.code == 'firebase-auth/invalid-akses') {
-          this.router.navigate(['/register/undangan']);
-        }
-        if(e.error?.code == 'database/need-upgrade') {
-          this.router.navigate(['/upgrade']);
-        }
-      } else {
-        this.wuiService.dialog({
-          title: 'Error',
-          message: e.message,
-          buttons: ["OK"]
-        });
-      }
     }
   }
 

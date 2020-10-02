@@ -1,16 +1,18 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { WuiFirebaseAuthService } from '../../services/wui-firebase-auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WuiService } from '@wajek/wui';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { WuiFirebaseUndanganService } from '../../services/wui-firebase-undangan.service';
+import { WuiFirebaseAksesService } from '../../services/wui-firebase-akses.service';
 
 @Component({
-  selector: 'wui-firebase-register-undangan',
-  templateUrl: './register-undangan.component.html',
-  styleUrls: ['./register-undangan.component.scss']
+  selector: 'wui-firebase-join',
+  templateUrl: './join.component.html',
+  styleUrls: ['./join.component.scss']
 })
-export class RegisterUndanganComponent implements OnInit {
+export class JoinComponent implements OnInit {
+
+  waitAcceptance = false;
 
   title: string;
   description: string;
@@ -20,14 +22,15 @@ export class RegisterUndanganComponent implements OnInit {
   registerText: string;
 
   formVerify = new FormGroup({
-    code: new FormControl('', Validators.required)
+    joinCode: new FormControl('', Validators.required)
   });
 
   constructor(
     private authService: WuiFirebaseAuthService,
     private router: Router,
     private wuiService: WuiService,
-    private undanganService: WuiFirebaseUndanganService,
+    private joinService: WuiFirebaseAksesService,
+    private activatedRoute: ActivatedRoute,
     @Inject('wuiFirebaseDecoration') private decoration: any
   ) { }
 
@@ -39,10 +42,13 @@ export class RegisterUndanganComponent implements OnInit {
 
     try {
       this.wuiService.openLoading();
-      let pengguna = await this.undanganService.verify(this.formVerify.controls['code'].value);
-      console.log(pengguna);
+      await this.joinService.insert({joinCode: this.formVerify.controls['joinCode'].value});
       this.wuiService.closeLoading();
-      this.router.navigate(['/home']);
+      this.router.navigate(['/join'], {
+        queryParams: {
+          waitAcceptance: true
+        }
+      })
     } catch(e) {
       this.wuiService.closeLoading();
       if(e.error) {
@@ -50,7 +56,14 @@ export class RegisterUndanganComponent implements OnInit {
           this.router.navigate(['/verify/phone']);
         }
         if(e.error.code == 'firebase-auth/invalid-akses') {
-          this.router.navigate(['/register/undangan']);
+          this.router.navigate(['/join']);
+        }
+        if(e.error.code == 'firebase-auth/invalid-tipe-akses') {
+          this.router.navigate(['/join'], {
+            queryParams: {
+              waitAcceptance: true
+            }
+          });
         }
       } else {
         this.wuiService.dialog({title: "Error", message: e.message, buttons: ["OK"]});
@@ -71,15 +84,18 @@ export class RegisterUndanganComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.title = this.decoration?.registerUndanganDecoration?.title || 'Bergabung';
-    this.description = this.decoration?.registerUndanganDecoration?.description || 'Masukkan kode undangan yang anda dapatkan dari pemilik/pengelola lembaga';
+    this.title = this.decoration?.joinDecoration?.title || 'Bergabung';
+    this.description = this.decoration?.joinDecoration?.description || 'Masukkan kode undangan yang anda dapatkan dari pemilik/pengelola lembaga';
     this.kodeInputDecoration = Object.assign({
       labelText: "Kode Undangan",
       icon: "asterisk"
-    }, this.decoration?.registerUndanganDecoration?.kodeInputDecoration || {});
-    this.buttonText = this.decoration?.registerUndanganDecoration?.buttonText || 'BERGABUNG SEKARANG';
-    this.beforeRegisterText = this.decoration?.registerUndanganDecoration?.beforeRegisterText || 'Saya adalah pemilik usaha';
-    this.registerText = this.decoration?.registerUndanganDecoration?.registerText || 'Daftarkan usaha anda';
+    }, this.decoration?.joinDecoration?.kodeInputDecoration || {});
+    this.buttonText = this.decoration?.joinDecoration?.buttonText || 'BERGABUNG SEKARANG';
+    this.beforeRegisterText = this.decoration?.joinDecoration?.beforeRegisterText || 'Saya adalah pemilik usaha';
+    this.registerText = this.decoration?.joinDecoration?.registerText || 'Daftarkan usaha anda';
+    this.activatedRoute.queryParams.subscribe(queryParams => {
+      this.waitAcceptance = queryParams['waitAcceptance'];
+    });
   }
 
 }

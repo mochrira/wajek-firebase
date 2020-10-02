@@ -3,14 +3,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [],
-    "paths": {
-      "@wajek/firebase": ["./dist/wui-firebase"],
-      "@wajek/firebase/*": ["./dist/wui-firebase/*"]
-    }
-  },
-  "angularCompilerOptions": {
-    "enableIvy": false
+    "types": []
   },
   "files": [
     "src/main.ts",

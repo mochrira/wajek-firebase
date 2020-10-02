@@ -1,6 +1,6 @@
 {
   "name": "@wajek/firebase",
-  "version": "0.0.4",
+  "version": "0.0.16",
   "peerDependencies": {
     "@wajek/wui": "^0.0.8",
     "firebase": "^7.19.1"

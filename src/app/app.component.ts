@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { WuiFirebaseAuthService } from '@wajek/firebase';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.firebaseAuthService.isLoggedIn.subscribe(isLoggedIn => {
+    this.firebaseAuthService.isLoggedIn.pipe(filter(isLoggedIn => isLoggedIn !== null && typeof isLoggedIn == 'boolean')).subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
     });
   }

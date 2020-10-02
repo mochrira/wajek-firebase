@@ -13,6 +13,7 @@ export class RegisterComponent implements OnInit {
 
   title: string;
   description: string;
+  displayNameInputDecoration: any;
   emailInputDecoration: any;
   passwordInputDecoration: any;
   confirmInputDecoration: any;
@@ -20,6 +21,7 @@ export class RegisterComponent implements OnInit {
   beforeGoogleText: string;
 
   formRegister = new FormGroup({
+    displayName: new FormControl('', Validators.required),
     email: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
     confirm: new FormControl('', Validators.required)
@@ -45,8 +47,7 @@ export class RegisterComponent implements OnInit {
 
     try {
       this.wuiService.openLoading();
-      await this.authService.registerEmail(this.formRegister.controls['email'].value, this.formRegister.controls['password'].value);
-      this.wuiService.closeLoading();
+      await this.authService.registerEmail(this.formRegister.controls['email'].value, this.formRegister.controls['password'].value, this.formRegister.controls['displayName'].value);      this.wuiService.closeLoading();
     } catch(e) {
       this.wuiService.closeLoading();
       if(e.error) {
@@ -68,6 +69,10 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.title = this.decoration?.registerDecoration?.title || 'Daftar';
     this.description = this.decoration?.registerDecoration?.description || 'Isilah formulir dibawah ini untuk mendaftar ke aplikasi';
+    this.displayNameInputDecoration = Object.assign({
+      labelText: 'Nama Tampilan',
+      icon: 'account-edit'
+    }, this.decoration?.registerDecoration?.displayNameInputDecoration || {})
     this.emailInputDecoration = Object.assign({
       labelText: 'Email',
       icon: 'at'
@@ -77,7 +82,7 @@ export class RegisterComponent implements OnInit {
       icon: 'lock-outline'
     }, this.decoration?.registerDecoration?.passwordInputDecoration || {});
     this.confirmInputDecoration = Object.assign({
-      labelText: 'Ketil ulang password',
+      labelText: 'Ketik ulang password',
       icon: 'form-textbox-password'
     }, this.decoration?.registerDecoration?.confirmInputDecoration || {});
     this.buttonText = this.decoration?.registerDecoration?.buttonText || 'DAFTAR DENGAN EMAIL';

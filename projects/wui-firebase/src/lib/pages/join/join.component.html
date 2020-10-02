@@ -4,12 +4,12 @@
         <wui-top-bar-item icon="arrow-left" (click)="signOut()"></wui-top-bar-item>
     </wui-top-bar>
 
-    <div class="login-box">
+    <div class="login-box" *ngIf="!waitAcceptance">
         <h1>{{title}}</h1>
         <div class="desc">{{description}}</div>
         <form [formGroup]="formVerify" (ngSubmit)="submit()">
             <wui-form-field class="transparent" label="{{kodeInputDecoration?.labelText}}" icon="{{kodeInputDecoration?.icon}}">
-                <input type="text" formControlName="code">
+                <input type="text" formControlName="joinCode">
             </wui-form-field>
             <button type="submit" class="btn btn-primary btn-rounded btn-lg">{{buttonText}}</button>
         </form>
@@ -17,6 +17,11 @@
             <div>{{beforeRegisterText}}</div>
             <a routerLink="/register/lembaga">{{registerText}}</a>
         </div>
+    </div>
+
+    <div class="login-box" *ngIf="waitAcceptance">
+        <h1>Menunggu Disetujui</h1>
+        <div class="desc">Akun anda sedang ditinjau untuk disetujui oleh pemilik lembaga</div>
     </div>
 
 </wui-page>

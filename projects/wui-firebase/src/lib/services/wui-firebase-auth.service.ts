@@ -1,26 +1,26 @@
 import { Injectable, Inject } from '@angular/core';
-import { Pengguna } from '../models/pengguna';
 import { BehaviorSubject } from 'rxjs';
-import { WuiFirebasePenggunaService } from './wui-firebase-pengguna.service';
-import { WuiFirebaseUpgradeService } from './wui-firebase-upgrade.service';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/messaging';
+import { WuiFirebaseHttpService } from './wui-firebase-http.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WuiFirebaseAuthService {
 
-  penggunaAktif: Pengguna;
+  penggunaAktif: any = {};
   isLoggedIn: BehaviorSubject<any> = new BehaviorSubject(null);
   closeListener: any;
   messaging: any;
 
   constructor(
-    private penggunaService: WuiFirebasePenggunaService,
-    private upgradeService: WuiFirebaseUpgradeService,
-    @Inject('wuiFirebaseConfig') private firebaseConfig: any
+    private httpService: WuiFirebaseHttpService,
+    @Inject('apiURL') private apiURL: string,
+    @Inject('wuiFirebaseConfig') private firebaseConfig: any,
+    private router: Router
   ) { 
   }
 
@@ -29,37 +29,40 @@ export class WuiFirebaseAuthService {
       firebase.initializeApp(this.firebaseConfig);
       this.closeListener = firebase.auth().onAuthStateChanged(async (user) => {
         try {
-          resolve(await this.accountInfo());
+          this.penggunaAktif = await this.accountInfo();
+          this.closeListener();
+          resolve(true);
         } catch(e) {
           reject(e);
         }
-        this.closeListener();
       });
     });
   }
 
   async accountInfo() {
+    if(firebase.auth().currentUser == null) {
+      this.isLoggedIn.next(false);
+      return;
+    }
+
     try {
-      if(firebase.auth().currentUser == null) {
-        this.isLoggedIn.next(false);
-        return false;
-      } else {
-        this.penggunaAktif = await this.penggunaService.row(firebase.auth().currentUser.uid);
-        let needUpgrade = await this.upgradeService.needUpgrade();
-        if(needUpgrade) {
-          let error = {
-            error: {
-              code: 'database/need-upgrade'
-            }
-          };
-          this.isLoggedIn.next(error);
-          throw error;
-        } else {
-          this.isLoggedIn.next(true);
-          return this.penggunaAktif;
-        }
-      }
+      this.penggunaAktif = await this.httpService.get(this.apiURL + 'auth');
+      this.isLoggedIn.next(true);
+      return this.penggunaAktif;
     } catch(e) {
+      if(e.error?.code == 'firebase-auth/invalid-akses') {
+        this.router.navigate(['/join']);
+      }
+      if(e.error?.code == 'firebase-auth/invalid-tipe-akses') {
+        this.router.navigate(['/join'], {
+          queryParams: {
+            waitAcceptance: true
+          }
+        });
+      }
+      if(e.error?.code == 'db/need-upgrade') {
+        this.router.navigate(['/upgrade']);
+      }
       this.isLoggedIn.next(e);
       throw e;
     }
@@ -70,8 +73,11 @@ export class WuiFirebaseAuthService {
     return await this.accountInfo();
   }
 
-  async registerEmail(email: string, password: string) {
+  async registerEmail(email: string, password: string, displayName: string) {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
+    await firebase.auth().currentUser.updateProfile({
+      displayName: displayName
+    });
     return await this.accountInfo();
   }
 
@@ -80,13 +86,11 @@ export class WuiFirebaseAuthService {
     return await this.accountInfo();
   }
 
-  signOut() {
-    return new Promise(async (resolve) => {
-      await firebase.auth().signOut();
-      this.penggunaAktif = null;
-      this.isLoggedIn.next(false);
-      resolve(true);
-    })
+  async signOut() {
+    await firebase.auth().signOut();
+    this.penggunaAktif = null;
+    this.isLoggedIn.next(false);
+    return true;
   }
 
 }

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { WuiFirebaseAuthService } from '../services/wui-firebase-auth.service';
-import { tap, catchError, map, filter } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { tap, map, filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -30,35 +29,6 @@ export class WuiFirebaseProblemGuardService implements CanActivate{
 @Injectable({
   providedIn: 'root'
 })
-export class WuiFirebaseVerifyGuardService implements CanActivate{
-
-  constructor(
-    private authService: WuiFirebaseAuthService,
-    private router: Router
-  ) { }
-
-  canActivate() {
-    return this.authService.isLoggedIn.pipe(
-      filter(isLoggedIn => isLoggedIn !== null),
-      map(isLoggedIn => {
-        if(typeof isLoggedIn !== 'boolean' && isLoggedIn.error.code == 'firebase-auth/unverified-number') {
-          return true
-        }
-        return false;
-      }),
-      tap(hasProblem => {
-        if(!hasProblem) {
-          this.router.navigate(['/home'])
-        }
-      })
-    );
-  }
-
-}
-
-@Injectable({
-  providedIn: 'root'
-})
 export class WuiFirebaseAksesGuardService implements CanActivate{
 
   constructor(
@@ -70,7 +40,7 @@ export class WuiFirebaseAksesGuardService implements CanActivate{
     return this.authService.isLoggedIn.pipe(
       filter(isLoggedIn => isLoggedIn !== null),
       map(isLoggedIn => {
-        if(typeof isLoggedIn !== 'boolean' && isLoggedIn.error.code == 'firebase-auth/invalid-akses') {
+        if(typeof isLoggedIn !== 'boolean' && (isLoggedIn.error.code == 'firebase-auth/invalid-akses' || isLoggedIn.error.code == 'firebase-auth/invalid-tipe-akses')) {
           return true
         }
         return false;
@@ -100,7 +70,7 @@ export class WuiFirebaseUpgradeGuardService implements CanActivate{
     return this.authService.isLoggedIn.pipe(
       filter(isLoggedIn => isLoggedIn !== null),
       map(isLoggedIn => {
-        if(typeof isLoggedIn !== 'boolean' && isLoggedIn.error.code == 'database/need-upgrade') {
+        if(typeof isLoggedIn !== 'boolean' && isLoggedIn.error.code == 'db/need-upgrade') {
           return true
         }
         return false;

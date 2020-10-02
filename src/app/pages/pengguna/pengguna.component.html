@@ -1,0 +1,56 @@
+<wui-page class="flex-page column">
+    <wui-top-bar>
+        <ng-container *ngIf="!searchMode">
+            <wui-top-bar-item icon="menu" wuiToggleDrawer></wui-top-bar-item>
+            <div class="wuiTitle">Data Pengguna</div>
+            <wui-top-bar-item icon="magnify" (click)="toggleSearch()"></wui-top-bar-item>
+            <wui-top-bar-item icon="refresh" (click)="refresh()"></wui-top-bar-item>
+        </ng-container>
+        <ng-container *ngIf="searchMode">
+            <input type="text" placeholder="Kata kunci..." (keyup)="search.next($event)">
+            <wui-top-bar-item icon="close" (click)="toggleSearch()"></wui-top-bar-item>
+        </ng-container>
+    </wui-top-bar>
+
+    <div class="flex-grow-1" *ngIf="dataPengguna.length > 0">
+        <wui-list>
+            <wui-list-item *ngFor="let pengguna of dataPengguna">
+                <span class="mdi mdi-account"></span>
+                <div class="flex-grow-1">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div>{{pengguna.displayName || 'Tanpa Nama'}}</div>
+                            <div class="font-14 text-muted">{{pengguna.email}}</div>
+                        </div>
+                        <div class="col-4">
+                            {{pengguna.tipe || 'Belum Disetujui'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-grow-0 pl-3">
+                    <button class="btn btn-smooth">
+                        <span class="mdi mdi-dots-vertical"></span>
+                    </button>
+                </div>
+            </wui-list-item>
+        </wui-list>
+    </div>
+
+    <div class="flex-grow-1 d-flex justify-content-center align-items-center" *ngIf="dataPengguna.length == 0">
+        <div>
+            <ng-container *ngIf="isLoading">
+                <wui-loading mode="circular"></wui-loading>
+            </ng-container>
+            <ng-container *ngIf="!isLoading">
+                <div>
+                    <span class="mdi mdi-inbox"></span>
+                </div>
+                <div>Data Kosong</div>
+            </ng-container>
+        </div>
+    </div>
+</wui-page>
+
+<wui-context-menu #rowContextMenu>
+    <wui-context-menu-item>Beri Akses</wui-context-menu-item>
+</wui-context-menu>

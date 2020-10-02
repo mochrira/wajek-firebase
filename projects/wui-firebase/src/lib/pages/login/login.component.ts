@@ -39,17 +39,6 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/home']);
     } catch(e) {
       this.wuiService.closeLoading();
-      if(e.error) {
-        if(e.error.code == 'firebase-auth/unverified-number') {
-          this.router.navigate(['/verify/phone']);
-        }else if(e.error.code == 'firebase-auth/invalid-akses') {
-          this.router.navigate(['/register/undangan']);
-        }else if(e.error.code == 'database/need-upgrade') {
-          this.router.navigate(['/upgrade']);
-        }
-      } else {
-        this.wuiService.dialog({ title: 'Error', message: e.message, buttons: ["OK"] });
-      }
     }
   }
 
@@ -62,27 +51,11 @@ export class LoginComponent implements OnInit {
     
     try {
       this.wuiService.openLoading();
-      await this.authService.signInEmail(
-        this.formLogin.controls['email'].value, 
-        this.formLogin.controls['password'].value
-      );
+      await this.authService.signInEmail(this.formLogin.controls['email'].value, this.formLogin.controls['password'].value);
       this.wuiService.closeLoading();
       this.router.navigate(['/home']);
     } catch(e) {
       this.wuiService.closeLoading();
-      if(e.error) {
-        if(e.error.code == 'firebase-auth/unverified-number') {
-          this.router.navigate(['/verify/phone']);
-        }
-        if(e.error.code == 'firebase-auth/invalid-akses') {
-          this.router.navigate(['/register/undangan']);
-        }
-        if(e.error.code == 'database/need-upgrade') {
-          this.router.navigate(['/upgrade']);
-        }
-      } else {
-        this.wuiService.dialog({title: "Error", message: e.message, buttons: ["OK"]});
-      }
     }
   }
 
